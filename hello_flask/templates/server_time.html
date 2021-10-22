@@ -2,8 +2,78 @@
 <html>
     <head>
         <!-- head definitions go here -->
+	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     </head>
-    <body>
-	    <h1>Time is {{server_time}}</h1>
+
+<style>
+#stan {	
+	border: 10px solid red;
+	left: 0px;
+	margin-left: 100px
+}
+
+#mark {
+	border: 10px solid green;
+	right: 0px;
+	margin-left: 100px
+}
+
+#tom {
+	border: 10px solid orange;
+	left: 0px;
+	margin-left: 100px;
+}
+</style>
+
+    <body style="background-image: url('/static/think.gif')">
+	    <h3 id="clienttime" style="background-color:Black;color:white;"></h3>
+
+	<script>
+		var count = 0;
+
+		setInterval( function(){ 
+			$('#clienttime').html( "Client time is " + new Date());
+			count = count + 1;
+
+			if(count == 5){
+				$('#1st').show(1000);
+			}
+	                if(count == 13){
+				$('#stan').show(1000);
+			}
+                        if(count == 18){
+				$('#2nd').show(1000);
+			}
+                        if(count == 26){
+				$('#mark').show(1000);
+			}
+                        if(count == 31){
+				$('#3rd').show(1000);
+			}
+                        if(count == 39){
+				$('#tom').show(1000);
+			}
+		}, 500);
+	</script>
+
+	    <h3 style="background-color:Black;color:white;">Server time is {{server_time}}</h3>
+
+	    <h1 style="text-align:center;background-color:White;border:10px solid black;">
+		    What should be Cary Jardin's<br> Halloween Costume?</h1>
+
+	    <h2 id="1st" style="display:none"><span style="background-color:White;border:5px solid black;">
+			     &nbsp;Option <span style="color:red">A</span>: 
+			    "The Devil Wears Prada." - Stanley Tucci&nbsp;</span></h2>
+            <h2 id="2nd" style="display:none"><span style="background-color:White;border:5px solid black;">
+			     &nbsp;Option <span style="color:green">B</span>: 
+			    "Kingsman: The Secret Service." - Mark Strong&nbsp;</span></h2>
+            <h2 id="3rd" style="display:none"><span style="background-color:White;border:5px solid black;">
+			     &nbsp;Option <span style="color:orange">C</span>: 
+			    "Tropic Thunder." - Tom Cruise&nbsp;</span></h2>
+
+	    <img id="stan" src="/static/stanely.jpg" style="display:none">
+	    <img id="mark" src="/static/mark.jpg" style="height:550px;display:none">
+	    <img id="tom" src="/static/tom.jpg" style="height:550px;display:none">
+
     </body>
 </html>
