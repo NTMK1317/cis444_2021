@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+    </head>
+    <body style="color:red;">
+
+        <div style="color:blue">
+            <div id="divg">
+                Hello
+            </div>
+
+            <div id="mydiv" style="color:black">
+            </div>
+	    <div id="mydiv2" style="color:black">
+	    </div>
+        </div>
+
+        <h2>this text</h2>
+    
+        <script> 
+
+		$.getJSON( "/getBook",  { "username":"hello", "password":"1234"} ,  function( books ) {
+		arrbooks = books.books;
+
+		$('#mydiv').html(arrbooks);
+
+		for(var i = 0; i < arrbooks.length; i++) {
+			bk = arrbooks[i][0];
+			bkname = "Title: " + arrbooks[i][1] + " ---------------------- Price: $" + arrbooks[i][2] + ".";
+			$('#cars').append('<option value="' + bk + '">' + bkname + '</option>');
+		}	
+
+	        }).fail(function( jqxhr, textStatus, error ) {
+				var err = textStatus + ", " + error;
+			console.log( "Request Failed: " + err );
+		});
+
+		function check(){
+			alert($('#cars').val());
+			return false;
+		}
+
+        </script>
+
+	<div id="books">
+		<h1>Buy me</h1>
+		<form action="/backp" method="post">
+		<select name="cars" id="cars">
+
+  		</select>
+		<input type="submit" value="Select" onclick="return check();">
+		</form>
+	</div>
+
+
+    </body>
+
+</html>

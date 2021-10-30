@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    </head>
+    <body>
+
+	<script>
+		var jwt_response = "";
+
+		$.getJSON( "/getBook", function( books ) {
+                arrbooks = books.books;
+
+                for(var i = 0; i < arrbooks.length; i++) {
+                        bk = arrbooks[i][0];
+                        bkname = "Title: " + arrbooks[i][1] + " ---------------------- Price: $" + arrbooks[i][2] + ".";
+			$('#db_books').append('<option value="' + bk + '">' + bkname + '</option>');
+                }
+
+                }).fail(function( jqxhr, textStatus, error ) {
+                                var err = textStatus + ", " + error;
+                        console.log( "Request Failed: " + err );
+                });
+
+		function check_in(){
+			var inun = $('#in_name').val();
+			var inpw = $('#in_word').val();
+
+			var count = 0;
+
+			if(inun.length == 0 || inpw.length == 0){
+                                $('#fail').show();
+
+                                setInterval( function(){
+                                        count = count + 1;
+                                        if(count == 5){
+                                                $('#fail').hide();
+                                        }
+                                }, 500);
+
+                                return false;
+			}else{
+				$.post("/auth4", { "username":inun, "password":inpw},
+					function(data) {
+						valcount = 0;
+						if(data.data['jwt'] == "false"){
+							$('#invalid').show();
+							setInterval( function(){
+                                        			count = count + 1;
+                                        			if(count == 5){
+                                                			$('#invalid').hide();
+                                        			}
+                                			}, 500);
+						}else{
+							set_jwt(data.data['jwt']);
+							$('#login').hide();
+							$('#signup').hide();
+							$('#books').show();
+						}
+					}, "json");
+			}
+			return false;
+		}
+
+                function check_up(){
+                        var upun = $('#up_name').val();
+                        var uppw = $('#up_word').val();
+
+			var count = 0;
+
+			if(upun.length == 0 || uppw.length == 0){
+				$('#fail').show();
+
+				setInterval( function(){
+					count = count + 1;
+                                	if(count == 5){
+                                        	$('#fail').hide();
+                                	}
+                        	}, 500);
+
+				return false;
+			}else{
+				$.post("/addUser", { "username":upun, "password":uppw},
+                                	function(data) {
+                                        	$('#success').show();
+                                	}, "json");
+
+                                setInterval( function(){
+                                        count = count + 1;
+                                        if(count == 5){
+                                                $('#success').hide();
+                                        }
+                                }, 500);
+				
+				return false;				
+			}
+                        return false;
+                }
+
+		function check_bk(){
+			//$('#mydiv').html($('#db_books').val());
+			var db_book_id = $('#db_books').val();
+
+			$.post("/purchase", { "jwt":jwt_response, "bkid":db_book_id},
+				function(data) {
+					$('#books').hide();
+					$('#thanks').show();
+				}, "json");
+	
+			return false;
+		}
+
+		function set_jwt(jwt_r){
+			jwt_response = jwt_r;
+		}
+	</script>
+
+
+
+            <div id="login">
+		<h1>SIGN IN</h1>
+	    	<form action="/backp" method="post">
+  			<label for="in_name">Username:</label><br>
+  				<input type="text" id="in_name" name="in_name" value=""><br>
+  			<label for="in_word">Password:</label><br>
+  				<input type="password" id="in_word" name="in_word" value=""><br><br>
+  			<input type="submit" value="Sign In" onclick="return check_in();">
+		</form>
+	    </div>
+
+            <div id="signup">
+                <h1>SIGN UP</h1>
+                <form action="/backp" method="post">
+                        <label for="up_name">Username:</label><br>
+                                <input type="text" id="up_name" name="up_name" value=""><br>
+                        <label for="up_word">Password:</label><br>
+                                <input type="password" id="up_word" name="up_word" value=""><br><br>
+                        <input type="submit" value="Sign Up" onclick="return check_up();">
+                </form>
+            </div>
+
+
+
+	    <div id="success" style="display:none">
+		    <h3>A new User has been created.</h3> 
+	    </div>
+
+	    <div id="fail" style="display:none">
+		    <h3>Incorrect input.</h3>
+	    </div>
+	    <div id="invalid" style="display:none">
+		    <h3>Invalid username or password.</h3>
+	    </div>
+	    <div id="thanks" style="display:none">
+		    <h1>Thank you for your purchase.<br>Reload page to start again.</h1>
+	    </div>
+
+
+
+	    <div id="books" style="display:none">
+		    <h1>Choose a Book to buy.</h1>
+		    <select name="db_books" id="db_books">
+
+  		    </select>
+		    <input type="submit" value="Select" onclick="return check_bk();">
+	    </div>
+
+	    <div id="mydiv" style="color:black">
+	    </div>
+    </body>
+</html>
+

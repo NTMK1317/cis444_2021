@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    </head>
+    <body>
+
+	<script>
+		var jwt_response = "bye";
+
+		function check_form(){
+			var un = $('#uname').val();
+			var pw = $('#pword').val();
+
+			$.post("/auth4", { "username":un, "password":pw},
+				function(data) {
+					$('#mydiv').html(data.data['jwt']);
+					set_jwt(data.data['jwt']);
+					//check();
+				}, "json");
+
+			//$('#mydiv2').html(jwt_response);
+
+			return false;
+		}
+
+		function set_jwt(jwt_r){
+			jwt_response = jwt_r;
+		}
+/*
+		function check(){
+			$('#mydiv3').html(jwt_response);
+		}
+*/
+	</script>
+            <div id="login">
+	    	<form action="/backp" method="post">
+  			<label for="uname">Username:</label><br>
+  				<input type="text" id="uname" name="uname" value=""><br>
+  			<label for="pword">Password:</label><br>
+  				<input type="password" id="pword" name="pword" value=""><br><br>
+  			<input type="submit" value="Sign In" onclick="return check_form();">
+		</form>
+	    </div>
+
+	    <div id="mydiv" style="color:black">
+	    </div>
+	    <div id="mydiv2" style="color:black">
+	    </div>
+	    <div id="mydiv3" style="color:black">
+	    </div>
+
+	    <div id="books" style="display:none">
+		    <h1>Buy me</h1>
+		    <select name="cars" id="cars">
+
+  		    </select>
+	    </div>
+
+    </body>
+</html>
+
