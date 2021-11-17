@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	     <script src="https://code.jquery.com/jquery-3.6.0.js" 
+		     integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+	     <script src="/static/cis444.js"></script>
+    </head>
+    <body>
+
+	<script>
+		$.getJSON( "/open_api/books", function( books ) {
+                arrbooks = books.books;
+
+                for(var i = 0; i < arrbooks.length; i++) {
+                        bk = arrbooks[i][0];
+                        bkname = "Title: " + arrbooks[i][1] + " ---------------------- Price: $" + arrbooks[i][2] + ".";
+			$('#db_books').append('<option value="' + bk + '">' + bkname + '</option>');
+                }
+
+                }).fail(function( jqxhr, textStatus, error ) {
+                                var err = textStatus + ", " + error;
+                        console.log( "Request Failed: " + err );
+                });
+
+		function send_form(){
+			$.post("/open_api/login", { "firstname":$('#fname').val(), "password":$('#password').val()},
+                       		function(data, textStatus) {
+					//this gets called when browser receives response from server
+					console.log(data.token);
+					//Set global JWT
+					jwt = data.token;
+					//make secure call with the jwt
+					get_books();
+				}, "json").fail( function(response) {
+					//this gets called if the server throws an error
+					console.log("error");
+					console.log(response);
+				});
+			return false;
+		}
+
+		function send_up(){
+                        var upun = $('#up_name').val();
+                        var uppw = $('#up_word').val();
+			var count = 0;
+
+			if(upun.length == 0 || uppw.length == 0){
+				$('#fail').show();
+
+				setInterval( function(){
+					count = count + 1;
+                                	if(count == 5){
+                                        	$('#fail').hide();
+                                	}
+                        	}, 500);
+				return false;
+			}else{
+				$.post("/open_api/addUser", { "username":upun, "password":uppw},
+                                	function(data) {
+                                        	$('#success').show();
+                                	}, "json");
+
+                                setInterval( function(){
+                                        count = count + 1;
+                                        if(count == 5){
+                                                $('#success').hide();
+                                        }
+                                }, 500);
+				return false;				
+			}
+                        return false;
+                }
+
+		function get_books(){
+			 //make secure call with the jwt
+                         secure_get_with_token("/secure_api/get_books", function(data){console.log("got books"); console.log(data)},
+                                                function(err){ console.log(err) });
+		}
+
+	</script>
+            <div id="login">
+	    	<form >
+  			<label for="fname">First name:</label><br>
+  				<input type="text" id="fname" name="fname" value="John"><br>
+  			<label for="password">Password:</label><br>
+  				<input type="password" id="password" name="password" value="12212"><br><br>
+  			<input type="submit" value="Signup" onclick="return send_form();">
+		</form>
+	    </div>
+
+	    <div id="signup">
+                <h1>SIGN UP</h1>
+                <form >
+                        <label for="up_name">Username:</label><br>
+                                <input type="text" id="up_name" name="up_name" value=""><br>
+                        <label for="up_word">Password:</label><br>
+                                <input type="password" id="up_word" name="up_word" value=""><br><br>
+                        <input type="submit" value="Sign Up" onclick="return send_up();">
+                </form>
+            </div>
+
+	    <div id="success" style="display:none">
+		    <h3>A new User has been created.</h3> 
+	    </div>
+
+	    <div id="fail" style="display:none">
+		    <h3>Incorrect input.</h3>
+	    </div>
+
+	    <div id="books">
+		    <h1>Choose a Book to buy.</h1>
+		    <select name="db_books" id="db_books">
+
+  		    </select>
+		    <input type="submit" value="Select" onclick="return false;">
+	    </div>
+    </body>
+</html>
+
