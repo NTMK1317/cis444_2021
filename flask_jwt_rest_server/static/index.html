@@ -23,19 +23,50 @@
                 });
 
 		function send_form(){
-			$.post("/open_api/login", { "firstname":$('#fname').val(), "password":$('#password').val()},
-                       		function(data, textStatus) {
-					//this gets called when browser receives response from server
-					console.log(data.token);
-					//Set global JWT
-					jwt = data.token;
-					//make secure call with the jwt
-					get_books();
-				}, "json").fail( function(response) {
-					//this gets called if the server throws an error
-					console.log("error");
-					console.log(response);
+			var inun = $('#in_name').val();
+			var inpw = $('#in_word').val();
+			var count = 0;
+
+			if(inun.length == 0 || inpw.length == 0){
+                                $('#fail').show();
+
+                                setInterval( function(){
+                                        count = count + 1;
+                                        if(count == 5){
+                                                $('#fail').hide();
+                                        }
+                                }, 500);
+                                return false;
+			}else{
+				$.post("/open_api/login", { "firstname":$('#in_name').val(), "password":$('#in_word').val()},
+                       			function(data, textStatus) {
+						if(data.authenticated === false){
+							//$('#mydiv').html("HI");
+							$('#invalid').show();
+							setInterval( function(){
+                                        			count = count + 1;
+                                        			if(count == 5){
+                                                			$('#invalid').hide();
+                                        			}
+                                			}, 500);
+						}else{
+							console.log(data.authenticated);
+							//this gets called when browser receives response from server
+							console.log(data.token);
+							//Set global JWT
+							jwt = data.token;
+							//make secure call with the jwt
+							//get_books();
+							$('#login').hide();
+							$('#signup').hide();
+							$('#books').show();
+						}
+					}, "json").fail( function(response) {
+						//this gets called if the server throws an error
+						console.log("error");
+						console.log(response);
 				});
+			}
 			return false;
 		}
 
@@ -79,12 +110,13 @@
 
 	</script>
             <div id="login">
+		<h1>SIGN IN</h1>
 	    	<form >
-  			<label for="fname">First name:</label><br>
-  				<input type="text" id="fname" name="fname" value="John"><br>
-  			<label for="password">Password:</label><br>
-  				<input type="password" id="password" name="password" value="12212"><br><br>
-  			<input type="submit" value="Signup" onclick="return send_form();">
+  			<label for="in_name">Username:</label><br>
+  				<input type="text" id="in_name" name="in_name" value=""><br>
+  			<label for="in_word">Password:</label><br>
+  				<input type="password" id="in_word" name="in_word" value=""><br><br>
+  			<input type="submit" value="Sign In" onclick="return send_form();">
 		</form>
 	    </div>
 
@@ -107,12 +139,19 @@
 		    <h3>Incorrect input.</h3>
 	    </div>
 
-	    <div id="books">
+	    <div id="invalid" style="display:none">
+		    <h3>Invalid username or password.</h3>
+	    </div>
+
+	    <div id="books" style="display:none">
 		    <h1>Choose a Book to buy.</h1>
 		    <select name="db_books" id="db_books">
 
   		    </select>
 		    <input type="submit" value="Select" onclick="return false;">
+	    </div>
+
+	    <div id="mydiv" style"color:black">
 	    </div>
     </body>
 </html>
