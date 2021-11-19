@@ -102,6 +102,18 @@
                         return false;
                 }
 
+		function buy_book(){
+			var db_book_id = $('#db_books').val();
+			//$('#mydiv').html(db_book_id);
+			secure_get_with_token("/secure_api/purchase", {"book_id" : db_book_id} ,
+				function(data){
+					console.log("purchased book");
+					$('#books').hide();
+					$('#thanks').show();
+				}, function(err){ console.log(err) });
+			return false;
+		}
+
 		function get_books(){
 			 //make secure call with the jwt
                          secure_get_with_token("/secure_api/get_books", function(data){console.log("got books"); console.log(data)},
@@ -143,12 +155,16 @@
 		    <h3>Invalid username or password.</h3>
 	    </div>
 
+	    <div id="thanks" style="display:none">
+		    <h1>Thank you for your purchase.<br>Reload page to start again.</h1>
+	    </div>
+
 	    <div id="books" style="display:none">
 		    <h1>Choose a Book to buy.</h1>
 		    <select name="db_books" id="db_books">
 
   		    </select>
-		    <input type="submit" value="Select" onclick="return false;">
+		    <input type="submit" value="Select" onclick="return buy_book();">
 	    </div>
 
 	    <div id="mydiv" style"color:black">
