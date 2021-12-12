@@ -57,7 +57,7 @@ function send_form(){
 							//get_books();
 							$('#login').hide();
 							$('#signup').hide();
-							$('#books').show();
+							$('#divchatbox').show();
 							document.getElementById("chatbttn").style.display = "block";
 						}
 					}, "json").fail( function(response) {
