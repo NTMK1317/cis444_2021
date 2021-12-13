@@ -24,21 +24,28 @@
                         console.log( "Request Failed: " + err );
                 });
 */
-/*
-$.getJSON( "/open_api/books", function( books ) {
-                arrbooks = books.books;
+setInterval(function(){
+	
+	$.getJSON( "/open_api/everymessage", function( filled ) {
+        	        arrmessages = filled.filled;
 
-                for(var i = 0; i < arrbooks.length; i++) {
-                        bk = arrbooks[i][0];
-                        bkname = "Title: " + arrbooks[i][1] + " ---------------------- Price: $" + arrbooks[i][2] + ".";
-                        $('#db_books').append('<option value="' + bk + '">' + bkname + '</option>');
-                }
+			if(arrmessages === false){
+			}else{
+				$('#selectbox').empty();
+				for(var i = 0; i < arrmessages.length; i++){
+					u_mess = "- " + arrmessages[i][0] + ": " + arrmessages[i][1] + "";
+					$('#selectbox').append('<option value="' + i + '">' + u_mess + '</option>');
+					$('#selectbox').append('<option value="' + i + '"> </option>');
+				}
+				$('#selectbox').find("option:last").remove()
+			}
 
-                }).fail(function( jqxhr, textStatus, error ) {
-                                var err = textStatus + ", " + error;
-                        console.log( "Request Failed: " + err );
-                });
-*/
+                	}).fail(function( jqxhr, textStatus, error ) {
+                                	var err = textStatus + ", " + error;
+                        	console.log( "Request Failed: " + err );
+                	});
+}, 500);
+
 function openForm() {
   document.getElementById("myForm").style.display = "block";
 }
@@ -55,7 +62,7 @@ function closeForm() {
     <h1>Chat</h1>
 
     <label for="msg"><b>Message</b></label>
-    <input placeholder="Type message.." size="63" name="msg" autocomplete="off" required>
+    <input type="text"  id= "msg" placeholder="Type message.." size="63" name="msg" autocomplete="off" required>
 
     <button type="submit" class="btn" onclick="return send_msg();">Send</button>
     <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
@@ -110,6 +117,8 @@ function closeForm() {
 	   -->
 	    <div id="divchatbox" style="display:none">
 		    <select name="selectbox" size="50"  id="selectbox" style="width:840px;overflow-x: auto;">
+			    <optgroup>
+			    </optgroup>
 		    </select>
 	    </div>
 

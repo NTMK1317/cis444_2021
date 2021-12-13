@@ -114,7 +114,8 @@ function send_msg(){
 	var user_msg = $('#msg').val();
 
 	if(!user_msg || !user_msg.trim()){
-		user_msg = "N/A";
+		alert("Please type something in.");
+		return false;
 	}
 
 	//$('#mydiv').html(user_msg);
